@@ -18,7 +18,16 @@
 .idea/dynamic.xml
 .idea/uiDesigner.xml
 
-.idea/*
+
+#Sabbe testar
+.idea/compiler.xml
+.idea/misc.xml
+.idea/modules.xml
+
+.idea/vcs.xml
+Datastrukt.iml
+
+# Sabbe är klar med test
 
 # Gradle:
 .idea/gradle.xml
