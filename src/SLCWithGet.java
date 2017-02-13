@@ -6,8 +6,9 @@
  * no elements can be added to the list and functions will be bork.
  */
 
-public class SLCWithGet<E> extends LinkedCollection<E>
-                        implements CollectionWithGet<E>{
+public class SLCWithGet<E extends Comparable<? super E>>
+        extends LinkedCollection<E>
+        implements CollectionWithGet<E>{
 
 
     /**
@@ -21,22 +22,20 @@ public class SLCWithGet<E> extends LinkedCollection<E>
      */
     @Override
     public boolean add( E element ) {
-        if ( element == null )
+        if ( element == null ){
             throw new NullPointerException();
-        else if(! (element instanceof Comparable)) {
-            return false;
         }else {
 
             Entry current = head;
             Entry previous = null;
-            if (((Comparable)element).compareTo(current.element) < 0) {
+            if (element.compareTo(current.element) < 0) {
                 head = new Entry( element, current );
                 return true;
             }
             while (current.next != null) {
                 previous = current;
                 current = current.next;
-                if (((Comparable)element).compareTo(current.element) < 0) {
+                if (element.compareTo(current.element) < 0) {
                     previous.next = new Entry( element, current );
                     return true;
                 }
@@ -64,17 +63,14 @@ public class SLCWithGet<E> extends LinkedCollection<E>
      */
     @Override
     public E get(E comparable) {
-        if(comparable instanceof Comparable){
-            Entry current = head;
-            Entry previous = null;
-            if (((Comparable)comparable).compareTo(current.element) == 0) {
+        Entry current = head;
+        if (comparable.compareTo(current.element) == 0) {
+            return current.element;
+        }
+        while (current.next != null) {
+            current = current.next;
+            if (comparable.compareTo(current.element) == 0) {
                 return current.element;
-            }
-            while (current.next != null) {
-                current = current.next;
-                if (((Comparable)comparable).compareTo(current.element) == 0) {
-                    return current.element;
-                }
             }
         }
         return null;
