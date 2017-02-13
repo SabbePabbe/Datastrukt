@@ -5,6 +5,7 @@
  * If the list is made using non Comparable objects,
  * no elements can be added to the list and functions will be bork.
  */
+
 public class SLCWithGet<E> extends LinkedCollection<E>
                         implements CollectionWithGet<E>{
 
