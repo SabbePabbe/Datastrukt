@@ -3,8 +3,11 @@
  */
 public class SplayWithGet<E extends Comparable<? super E>>
                             extends BinarySearchTree<E>
-                            implements Iterable<E> {
-
+                            implements CollectionWithGet<E> {
+    @Override
+    public E get(E e) {
+        return null;
+    }
     //Från labbinstruktionerna:
     /*Ni behöver endast utföra balanseringarna vid sökning i trädet,
     även om det normalt sker även vid insättning i och borttagning ur ett Splay-träd.*/
