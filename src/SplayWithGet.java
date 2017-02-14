@@ -33,13 +33,13 @@ public class SplayWithGet<E extends Comparable<? super E>>
         x.element = z.element;
         z.element = e;
         x.right   = z.right;
-        x.right.parent = x;
+        if(x.right != null) x.right.parent = x;
         y.right   = z.left;
-        y.right.parent = y;
+        if(y.right != null) y.right.parent = y;
         z.left    = x.left;
-        z.left.parent = z;
+        if(z.left != null) z.left.parent = z;
         z.right   = y.left;
-        z.right.parent = z;
+        if(z.right != null) z.right.parent = z;
         y.left    = z;
         x.left    = y;
     }
@@ -60,13 +60,13 @@ public class SplayWithGet<E extends Comparable<? super E>>
         x.element = z.element;
         z.element = e;
         x.left   = z.left;
-        x.left.parent = x;
+        if(x.left != null) x.left.parent = x;
         y.left   = z.right;
-        y.left.parent = y;
+        if(y.left != null) y.left.parent = y;
         z.right    = x.right;
-        z.right.parent = z;
+        if(z.right != null) z.right.parent = z;
         z.left   = y.right;
-        z.left.parent = z;
+        if(z.left != null) z.left.parent = z;
         y.right    = z;
         x.right    = y;
     }
