@@ -25,24 +25,27 @@ public class SLCWithGet<E extends Comparable<? super E>>
         if ( element == null ){
             throw new NullPointerException();
         }else {
-
-            Entry current = head;
-            Entry previous = null;
-            if (element.compareTo(current.element) < 0) {
-                head = new Entry( element, current );
-                return true;
-            }
-            while (current.next != null) {
-                previous = current;
-                current = current.next;
+            if(head == null){
+                head = new Entry(element, null);
+            } else {
+                Entry current = head;
+                Entry previous = null;
                 if (element.compareTo(current.element) < 0) {
-                    previous.next = new Entry( element, current );
+                    head = new Entry(element, current);
                     return true;
                 }
-            }
-            current.next = new Entry( element, null );
-            return true;
+                while (current.next != null) {
+                    previous = current;
+                    current = current.next;
+                    if (element.compareTo(current.element) < 0) {
+                        previous.next = new Entry(element, current);
+                        return true;
+                    }
+                }
+                current.next = new Entry(element, null);
 
+            }
+            return true;
 
         }
 
@@ -64,13 +67,15 @@ public class SLCWithGet<E extends Comparable<? super E>>
     @Override
     public E get(E comparable) {
         Entry current = head;
-        if (comparable.compareTo(current.element) == 0) {
-            return current.element;
-        }
-        while (current.next != null) {
-            current = current.next;
+        if(current != null) {
             if (comparable.compareTo(current.element) == 0) {
                 return current.element;
+            }
+            while (current.next != null) {
+                current = current.next;
+                if (comparable.compareTo(current.element) == 0) {
+                    return current.element;
+                }
             }
         }
         return null;

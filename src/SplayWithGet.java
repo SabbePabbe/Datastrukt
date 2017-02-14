@@ -6,6 +6,7 @@ public class SplayWithGet<E extends Comparable<? super E>>
                             implements CollectionWithGet<E> {
     @Override
     public E get(E e) {
+        if(e == null) return null;
         Entry entry = find(e, root);
         if(entry == null){
             return null;
@@ -16,7 +17,11 @@ public class SplayWithGet<E extends Comparable<? super E>>
 
     protected void bubble ( Entry x){
         //När vi inte har en parent längre så är vi en root!
+        System.out.println("X finns? "+(x != null));
+        System.out.println("X.P finns? "+(x.parent != null));
+        int i = 0;
         while(x.parent != null){
+            System.out.println(i++);
             if(x.parent.left == x){
                 //We are left child
                 if(x.parent.parent != null){
@@ -34,7 +39,7 @@ public class SplayWithGet<E extends Comparable<? super E>>
                     rotateRight(x.parent);
                     x = x.parent;
                 }
-            }else {
+            }else {//We are right child
                 if (x.parent.parent != null) {
                     if (x.parent.parent.left == x.parent) {
                         //We are right child of left child
