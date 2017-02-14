@@ -17,10 +17,59 @@ public class SplayWithGet<E extends Comparable<? super E>>
     och zigzig, skall ni skriva själva. Observera att benämningarna zigzag, zigzig osv inte används på riktigt
     samma sätt av alla.
      */
+    /* Roterar höger runt x och sedan runt y
+              x'                  z'
+             / \                /   \
+            A   y'     -->     y'    D
+               / \            / \
+              B   z          x'  C
+                 / \        / \
+                C   D      A   B
+    */
+    private void zigzig( Entry x ){
+        Entry   y = x.right,
+                z = x.right.right;
+        E       e = x.element;
+        x.element = z.element;
+        z.element = e;
+        x.right   = z.right;
+        x.right.parent = x;
+        y.right   = z.left;
+        y.right.parent = y;
+        z.left    = x.left;
+        z.left.parent = z;
+        z.right   = y.left;
+        z.right.parent = z;
+        y.left    = z;
+        x.left    = y;
+    }
 
-
-
-
+    /* Roterar vänster runt x och sedan runt y
+              x'                  z'
+             / \                 / \
+            y'  D      -->      A   y'
+           / \                     / \
+          z   C                   B   x'
+         / \                         / \
+        A   B                       C   D
+    */
+    private void zagzag( Entry x ){
+        Entry   y = x.left,
+                z = x.left.left;
+        E       e = x.element;
+        x.element = z.element;
+        z.element = e;
+        x.left   = z.left;
+        x.left.parent = x;
+        y.left   = z.right;
+        y.left.parent = y;
+        z.right    = x.right;
+        z.right.parent = z;
+        z.left   = y.right;
+        z.left.parent = z;
+        y.right    = z;
+        x.right    = y;
+    }
 
     
 
