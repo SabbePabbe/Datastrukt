@@ -6,7 +6,53 @@ public class SplayWithGet<E extends Comparable<? super E>>
                             implements CollectionWithGet<E> {
     @Override
     public E get(E e) {
-        return null;
+        Entry entry = find(e, root);
+        if(entry == null){
+            return null;
+        }
+        bubble(entry);
+        return root.element;
+    }
+
+    protected void bubble ( Entry x){
+        //När vi inte har en parent längre så är vi en root!
+        while(x.parent != null){
+            if(x.parent.left == x){
+                //We are left child
+                if(x.parent.parent != null){
+                    if(x.parent.parent.left == x.parent) {
+                        //We are left child of left child
+                        zagzag(x.parent.parent);
+                    }else{
+                        //We are left child of right child
+                        doubleRotateLeft(x.parent.parent);
+                    }
+                    //"Swapped" place with grandparent
+                    x = x.parent.parent;
+                }else {
+                    //No grandparent, we are left child of root
+                    rotateRight(x.parent);
+                    x = x.parent;
+                }
+            }else {
+                if (x.parent.parent != null) {
+                    if (x.parent.parent.left == x.parent) {
+                        //We are right child of left child
+                        doubleRotateRight(x.parent.parent);
+                    } else {
+                        //We are right child of right child
+                        zigzig(x.parent.parent);
+                    }
+                    //"Swapped" place with grandparent
+                    x = x.parent.parent;
+                } else {
+                    //No grandparent, we are right child of root
+                    rotateLeft(x.parent);
+                    x = x.parent;
+                }
+            }
+        }
+        root = x;
     }
     //Från labbinstruktionerna:
     /*Ni behöver endast utföra balanseringarna vid sökning i trädet,
