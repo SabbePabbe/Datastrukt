@@ -4,26 +4,56 @@
 public class SplayWithGet<E extends Comparable<? super E>>
                             extends BinarySearchTree<E>
                             implements CollectionWithGet<E> {
+    /**
+     *  Find the first occurence of an element
+     *  in the collection that is equal to the argument
+     *  <tt>e</tt> with respect to its natural order.
+     *  I.e. <tt>e.compareTo(element)</tt> is 0.
+     *
+     *  @param e The dummy element to compare to.
+     *  @return  An element  <tt>e'</tt> in the collection
+     *           satisfying <tt>e.compareTo(comparable') == 0</tt>.
+     *           If no element is found, <tt>null</tt> is returned
+     */
     @Override
     public E get(E e) {
         if(e == null) return null;
-        Entry entry = find(e, root);
-        if(entry == null){
-            return null;
-        }
-        bubble(entry);
+        Entry entry = alwaysFind(e, root, null);
+        if(entry == null)return null;
         return root.element;
+
+
     }
 
-    protected void bubble ( Entry x){
+    /*
+     * Finds and splays the first occurance of an entry with element elem,
+     * or in the case of no such entry we splay the last visited entry.
+     */
+    protected Entry alwaysFind( E elem, Entry t, Entry tparent ) {
+        if ( t == null ) {
+            if(tparent != null) splay(tparent);
+            return null;
+        } else {
+            int jfr = elem.compareTo( t.element );
+            if ( jfr  < 0 )
+                return alwaysFind( elem, t.left, t );
+            else if ( jfr > 0 )
+                return alwaysFind( elem, t.right, t );
+            else
+                splay(t);
+                return t;
+        }
+    }  //   find
+
+    /*
+     * Splays the entry x to the root of the tree
+     */
+    protected void splay(Entry x ){
         //När vi inte har en parent längre så är vi en root!
         while(x.parent != null){
             if(x.parent.left == x){
-
                 //We are left child
                 if(x.parent.parent != null){
-
-
                     if(x.parent.parent.left == x.parent) {
                         //We are left child of left child
                         zagzag(x.parent.parent);
@@ -34,13 +64,11 @@ public class SplayWithGet<E extends Comparable<? super E>>
                         x = x.parent;
                     }
                     //"Swapped" place with grandparent
-
                 }else {
                     //No grandparent, we are left child of root
                     rotateRight(x.parent);
                     x = x.parent;
                 }
-
             }else {//We are right child
                 if (x.parent.parent != null) {
                     if (x.parent.parent.left == x.parent) {
@@ -61,16 +89,8 @@ public class SplayWithGet<E extends Comparable<? super E>>
         }
         root = x;
     }
-    //Från labbinstruktionerna:
-    /*Ni behöver endast utföra balanseringarna vid sökning i trädet,
-    även om det normalt sker även vid insättning i och borttagning ur ett Splay-träd.*/
-    
-    /*Koden för balanseringarna: zig, zag, zigzag och zagzig, kan ni kopiera från AVL-trädet i zip-filen och
-    bara döpa om metoderna samt stryka allt som har med höjden att göra. Koden för balanseringarna: zagzag
-    och zigzig, skall ni skriva själva. Observera att benämningarna zigzag, zigzig osv inte används på riktigt
-    samma sätt av alla.
-     */
-    /* Roterar höger runt x och sedan runt y
+
+    /* Rotate right around x and then around y
               x'                  z'
              / \                /   \
             A   y'     -->     y'    D
@@ -97,7 +117,7 @@ public class SplayWithGet<E extends Comparable<? super E>>
         x.left    = y;
     }
 
-    /* Roterar vänster runt x och sedan runt y
+    /* Rotate left around x and then around y
               x'                  z'
              / \                 / \
             y'  D      -->      A   y'

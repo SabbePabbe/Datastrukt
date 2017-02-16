@@ -29,7 +29,7 @@ public class SLCWithGet<E extends Comparable<? super E>>
                 head = new Entry(element, null);
             } else {
                 Entry current = head;
-                Entry previous = null;
+                Entry previous;
                 if (element.compareTo(current.element) < 0) {
                     head = new Entry(element, current);
                     return true;
@@ -68,13 +68,16 @@ public class SLCWithGet<E extends Comparable<? super E>>
     public E get(E comparable) {
         Entry current = head;
         if(current != null) {
-            if (comparable.compareTo(current.element) == 0) {
+            int comp = 0;
+            if ((comp = comparable.compareTo(current.element)) == 0) {
                 return current.element;
             }
             while (current.next != null) {
                 current = current.next;
-                if (comparable.compareTo(current.element) == 0) {
+                if ((comp = comparable.compareTo(current.element)) == 0) {
                     return current.element;
+                } else if (comp < 0){
+                    return null;
                 }
             }
         }
