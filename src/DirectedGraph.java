@@ -1,15 +1,20 @@
 
+import sun.awt.image.ImageWatched;
+
 import java.util.*;
 
 public class DirectedGraph<E extends Edge> {
 
+	private ArrayList<LinkedList<Edge>> nodes;
 
 	public DirectedGraph(int noOfNodes) {
-		//TODO make new pool of nodes
+		nodes = new ArrayList<>(noOfNodes);
+
 	}
 
 	public void addEdge(E e) {
-		//TODO add edge
+
+		nodes.get(e.from).add(e);
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {
@@ -49,27 +54,37 @@ public class DirectedGraph<E extends Edge> {
 	}
 		
 	public Iterator<E> minimumSpanningTree() {
-		//TODO use kruskal
 
-		/*
-		(Pseudocoden från ”Refined attempt two”)
-0 			skapa ett fält cc som för varje nod
-				innehåller en egen tom lista (som skall
-				innehålla bågar så småningom)
-				(dvs varje nod är i en egen komponent)
-1 			Lägg in alla bågar i en prioritetskö
-2 			Så länge pq, ej är tom && |cc| > 1
-3 				hämta e = (from, to, weight) från kön
-5 				om from och to inte refererar till
-					samma lista i cc
-6 				flytta över alla elementen från den
-					kortare listan till den andra och se till
-					att alla berörda noder i cc refererar
-					till den påfyllda listan
-8 				lägg slutligen e i den påfyllda listan
-		 */
+		ArrayList<LinkedList<Edge>> cc = new ArrayList<>(nodes.size());
 
+		PriorityQueue<Edge> pq = new PriorityQueue<>(); //TODO make comparator and send it here
 
+		for (LinkedList<Edge> ll : nodes){
+			pq.addAll(ll);
+		}
+
+		int noOfListsLeft = nodes.size();
+
+		while (!pq.isEmpty() && (noOfListsLeft > 1)){
+			Edge e = pq.poll();
+			if (!(cc.get(e.from) == cc.get(e.to))){
+				if((cc.get(e.from).size() > cc.get(e.to).size())){
+					for(Edge edge : cc.get(e.to) ) {
+						cc.get(e.from).add(edge);
+					}
+					cc.set(e.to,cc.get(e.from));
+
+				} else {
+					for(Edge edge : cc.get(e.from) ) {
+						cc.get(e.to).add(edge);
+					}
+					cc.set(e.from,cc.get(e.to));
+				}
+				noOfListsLeft--;
+			}
+		}
+
+		//TODO return iterator over the edges??
 		return null;
 	}
 
