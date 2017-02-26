@@ -50,6 +50,26 @@ public class DirectedGraph<E extends Edge> {
 		
 	public Iterator<E> minimumSpanningTree() {
 		//TODO use kruskal
+
+		/*
+		(Pseudocoden från ”Refined attempt two”)
+0 			skapa ett fält cc som för varje nod
+				innehåller en egen tom lista (som skall
+				innehålla bågar så småningom)
+				(dvs varje nod är i en egen komponent)
+1 			Lägg in alla bågar i en prioritetskö
+2 			Så länge pq, ej är tom && |cc| > 1
+3 				hämta e = (from, to, weight) från kön
+5 				om from och to inte refererar till
+					samma lista i cc
+6 				flytta över alla elementen från den
+					kortare listan till den andra och se till
+					att alla berörda noder i cc refererar
+					till den påfyllda listan
+8 				lägg slutligen e i den påfyllda listan
+		 */
+
+
 		return null;
 	}
 
