@@ -5,13 +5,16 @@ import java.util.*;
 
 public class DirectedGraph<E extends Edge> {
 
-	private ArrayList<LinkedList<Edge>> nodes;
+	private ArrayList<LinkedList<E>> nodes;
 	private int noOfNodes;
 
 	public DirectedGraph(int noOfNodes) {
 		this.noOfNodes = noOfNodes;
 		nodes = new ArrayList<>(noOfNodes);
 
+		for (int i = 0;i < noOfNodes; i++ ) {
+			nodes.add(new LinkedList<>());
+		}
 	}
 
 	public void addEdge(E e) {
@@ -22,32 +25,35 @@ public class DirectedGraph<E extends Edge> {
 	public Iterator<E> shortestPath(int from, int to) {
 		//TODO Dikstra cycle through connected nodes and build ways, see wich one is shortest with returnval (just do recursive return?)
 
-
-
-
-
-		//lista med alla besökta noder, kollas av vägarna så man inte korsar varandra
-
+		System.out.println("goal is: " + to);
+		//lista över vilka noder som har blivit besökta
 		boolean[] nodeVisited = new boolean[noOfNodes];
+		//nodeVisited[from] = true;
 
+		PriorityQueue<DijkstraQueueElement> dijkstraPQ = new PriorityQueue<DijkstraQueueElement>(new CompDijkstraPath());
 
-		PriorityQueue<DijkstraQueueElement> dijkstraPQ = new PriorityQueue<DijkstraQueueElement>();
-
-		dijkstraPQ.add(new DijkstraQueueElement(from, 0, new ArrayList<>())); //lägg (startnod, 0, tom väg) i en p-kö
+		//custom konstruktor för första elementet, pga de andra vill lägga till en edge i path
+		dijkstraPQ.add(new DijkstraQueueElement(from)); //lägg (startnod, 0, tom väg) i en p-kö
 
 		DijkstraQueueElement element;
+
 		while(dijkstraPQ.size() > 0){
+
 			element = dijkstraPQ.poll(); //(nod, cost, path) = första elementet i p-kön
 			int node = element.getNode();
 			if(!nodeVisited[node]){
 				if(node == to){
-					return null; //return path
+					//nodeVisited[node] = true;
+					return element.getPath().iterator();
+
 				} else {
 					nodeVisited[node] = true;
-					//for every granne
-					for (Edge e:nodes.get(node)) {
+					//for every neighbour of our node:
+					for (E e:nodes.get(node)) {
+
 						if (!nodeVisited[e.to]){
-							dijkstraPQ.add(new DijkstraQueueElement(e.to,
+
+							dijkstraPQ.add(new DijkstraQueueElement(e,
 									element.getCost() + (int) e.getWeight(),
 									element.getPath()));
 						}
@@ -81,14 +87,20 @@ public class DirectedGraph<E extends Edge> {
 
 		private int node;
 		private int cost;
-		private ArrayList<Integer> path;
+		private ArrayList<E> path;
 
-		public DijkstraQueueElement(int node, int cost, ArrayList<Integer> path){
-			this.node = node;
+		public DijkstraQueueElement(E edge, int cost, ArrayList<E> path){
+			this.node = edge.to;
 			this.cost = cost;
-			this.path = path;
+			this.path = new ArrayList<E>(path); //create new path for each element
+			this.path.add(edge);
+		}
 
-			path.add(node); //TODO vill vi göra detta här?
+		//custom konstruktor för första elementet
+		public DijkstraQueueElement(int node){
+			this.node = node;
+			cost = 0;
+			path = new ArrayList<>(noOfNodes);
 		}
 
 		public int getNode(){
@@ -99,19 +111,32 @@ public class DirectedGraph<E extends Edge> {
 			return cost;
 		}
 
-		public ArrayList<Integer> getPath(){
+		public ArrayList<E> getPath(){
 			return path;
 		}
 	}
 
-		
+	private class CompDijkstraPath implements Comparator<DijkstraQueueElement> {
+		@Override
+		public int compare(DijkstraQueueElement o1, DijkstraQueueElement o2) {
+			return  (int) Math.signum((o1.getCost() - o2.getCost()));
+		}
+	}
+
+	
+
+
 	public Iterator<E> minimumSpanningTree() {
 
-		ArrayList<LinkedList<Edge>> cc = new ArrayList<>(nodes.size());
+		if (noOfNodes == 0){
+			return null;
+		}
 
-		PriorityQueue<Edge> pq = new PriorityQueue<>(new CompKruskalEdge());
+		ArrayList<LinkedList<E>> cc = new ArrayList<>(noOfNodes);
 
-		for (LinkedList<Edge> ll : nodes){
+		PriorityQueue<E> pq = new PriorityQueue<>(new CompKruskalEdge());
+
+		for (LinkedList<E> ll : nodes){
 			pq.addAll(ll);
 		}
 
@@ -121,13 +146,13 @@ public class DirectedGraph<E extends Edge> {
 			Edge e = pq.poll();
 			if (!(cc.get(e.from) == cc.get(e.to))){
 				if((cc.get(e.from).size() > cc.get(e.to).size())){
-					for(Edge edge : cc.get(e.to) ) {
+					for(E edge : cc.get(e.to) ) {
 						cc.get(e.from).add(edge);
 					}
 					cc.set(e.to,cc.get(e.from));
 
 				} else {
-					for(Edge edge : cc.get(e.from) ) {
+					for(E edge : cc.get(e.from) ) {
 						cc.get(e.to).add(edge);
 					}
 					cc.set(e.from,cc.get(e.to));
@@ -135,9 +160,7 @@ public class DirectedGraph<E extends Edge> {
 				noOfListsLeft--;
 			}
 		}
-
-		//TODO return iterator over the edges??
-		return null;
+		return cc.get(0).iterator();
 	}
 
 }
