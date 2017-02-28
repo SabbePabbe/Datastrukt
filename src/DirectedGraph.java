@@ -57,7 +57,7 @@ public class DirectedGraph<E extends Edge> {
 
 		ArrayList<LinkedList<Edge>> cc = new ArrayList<>(nodes.size());
 
-		PriorityQueue<Edge> pq = new PriorityQueue<>(); //TODO make comparator and send it here
+		PriorityQueue<Edge> pq = new PriorityQueue<>(new CompKruskalEdge()); //TODO make comparator and send it here
 
 		for (LinkedList<Edge> ll : nodes){
 			pq.addAll(ll);
