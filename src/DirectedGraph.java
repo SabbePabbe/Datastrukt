@@ -136,11 +136,19 @@ public class DirectedGraph<E extends Edge> {
 
 	public Iterator<E> minimumSpanningTree() {
 
+
+		//TODO MST does not work. why??
+
+
 		if (noOfNodes == 0){
 			return null;
 		}
 
 		ArrayList<LinkedList<E>> cc = new ArrayList<>(noOfNodes);
+
+		for(int i = 0; i < noOfNodes; i++){
+			cc.add(new LinkedList<>());
+		}
 
 		PriorityQueue<E> pq = new PriorityQueue<>(new CompKruskalEdge());
 
@@ -168,7 +176,7 @@ public class DirectedGraph<E extends Edge> {
 				noOfListsLeft--;
 			}
 		}
-		return cc.get(0).iterator();
+		return cc.get(0).iterator(); //TODO: what to return? this should maybe be fine
 	}
 
 }
