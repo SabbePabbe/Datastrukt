@@ -18,7 +18,6 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public void addEdge(E e) {
-
 		nodes.get(e.from).add(e);
 	}
 
@@ -26,7 +25,6 @@ public class DirectedGraph<E extends Edge> {
 
 		//lista över vilka noder som har blivit besökta
 		boolean[] nodeVisited = new boolean[noOfNodes];
-		//nodeVisited[from] = true;
 
 		PriorityQueue<DijkstraQueueElement> dijkstraPQ = new PriorityQueue<DijkstraQueueElement>(new CompDijkstraPath());
 
@@ -43,7 +41,6 @@ public class DirectedGraph<E extends Edge> {
 				if(node == to){
 					//nodeVisited[node] = true;
 					return element.getPath().iterator();
-
 				} else {
 					nodeVisited[node] = true;
 					//for every neighbour of our node:
@@ -58,25 +55,7 @@ public class DirectedGraph<E extends Edge> {
 					}
 				}
 			}
-
 		}
-
-		/*
-		//variant en till en
-
-		while kön inte är tom
-
-			if nod ej är besökt
-				if nod är slutpunkt returnera path
-				else
-				markera nod besökt
-				for every v on EL(nod)
-					if v ej är besökt
-					lägg in nytt köelement för v i p-kön
-
-
-		 */
-
 		return null;
 	}
 
