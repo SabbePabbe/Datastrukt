@@ -24,7 +24,6 @@ public class DirectedGraph<E extends Edge> {
 
 	public Iterator<E> shortestPath(int from, int to) {
 
-		System.out.println("goal is: " + to);
 		//lista över vilka noder som har blivit besökta
 		boolean[] nodeVisited = new boolean[noOfNodes];
 		//nodeVisited[from] = true;
