@@ -23,7 +23,6 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {
-		//TODO Dikstra cycle through connected nodes and build ways, see wich one is shortest with returnval (just do recursive return?)
 
 		System.out.println("goal is: " + to);
 		//lista över vilka noder som har blivit besökta
@@ -84,7 +83,6 @@ public class DirectedGraph<E extends Edge> {
 
 
 	private class DijkstraQueueElement {
-
 		private int node;
 		private int cost;
 		private ArrayList<E> path;
@@ -123,10 +121,9 @@ public class DirectedGraph<E extends Edge> {
 		}
 	}
 
-	private class CompKruskalEdge implements Comparator<Edge>{
+	private class CompKruskalEdge implements Comparator<E>{
 		@Override
-		public int compare(Edge o1, Edge o2) {
-
+		public int compare(E o1, E o2) {
 			return (int) Math.signum(o1.getWeight() - o2.getWeight());
 
 		}
@@ -135,10 +132,6 @@ public class DirectedGraph<E extends Edge> {
 
 
 	public Iterator<E> minimumSpanningTree() {
-
-
-		//TODO MST does not work. why??
-
 
 		if (noOfNodes == 0){
 			return null;
@@ -159,11 +152,18 @@ public class DirectedGraph<E extends Edge> {
 		int noOfListsLeft = noOfNodes;
 
 		while (!pq.isEmpty() && (noOfListsLeft > 1)){
-			Edge e = pq.poll();
+			E e = pq.poll();
+
 			if (!(cc.get(e.from) == cc.get(e.to))){
+
 				if((cc.get(e.from).size() > cc.get(e.to).size())){
 					for(E edge : cc.get(e.to) ) {
 						cc.get(e.from).add(edge);
+					}
+					for (int i = 0; i < cc.size(); i++){
+						if ((cc.get(i) == cc.get(e.to)) &&(i!=e.to)){
+							cc.set(i, cc.get(e.from));
+						}
 					}
 					cc.set(e.to,cc.get(e.from));
 
@@ -171,12 +171,20 @@ public class DirectedGraph<E extends Edge> {
 					for(E edge : cc.get(e.from) ) {
 						cc.get(e.to).add(edge);
 					}
+					for (int i = 0; i < cc.size(); i++){
+						if ((cc.get(i) == cc.get(e.from)) && (i!=e.from)){
+							cc.set(i, cc.get(e.to));
+						}
+					}
 					cc.set(e.from,cc.get(e.to));
+
 				}
 				noOfListsLeft--;
+				cc.get(e.to).add(e);
 			}
 		}
-		return cc.get(0).iterator(); //TODO: what to return? this should maybe be fine
+		//Does not matter which index in cc, they all refer to the same, so just use the first
+		return cc.get(0).iterator();
 	}
 
 }
