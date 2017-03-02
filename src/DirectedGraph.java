@@ -49,7 +49,7 @@ public class DirectedGraph<E extends Edge> {
 						if (!nodeVisited[e.to]){
 
 							dijkstraPQ.add(new DijkstraQueueElement(e,
-									element.getCost() + (int) e.getWeight(),
+									element.getCost() + e.getWeight(), 
 									element.getPath()));
 						}
 					}
@@ -62,10 +62,10 @@ public class DirectedGraph<E extends Edge> {
 
 	private class DijkstraQueueElement {
 		private int node;
-		private int cost;
+		private double cost;
 		private ArrayList<E> path;
 
-		public DijkstraQueueElement(E edge, int cost, ArrayList<E> path){
+		public DijkstraQueueElement(E edge, double cost, ArrayList<E> path){
 			this.node = edge.to;
 			this.cost = cost;
 			this.path = new ArrayList<E>(path); //create new path for each element
@@ -83,7 +83,7 @@ public class DirectedGraph<E extends Edge> {
 			return node;
 		}
 
-		public int getCost() {
+		public double getCost() {
 			return cost;
 		}
 
@@ -137,22 +137,19 @@ public class DirectedGraph<E extends Edge> {
 				if((cc.get(e.from).size() > cc.get(e.to).size())){
 					for(E edge : cc.get(e.to) ) {
 						cc.get(e.from).add(edge);
-					}
-					for (int i = 0; i < cc.size(); i++){
-						if ((cc.get(i) == cc.get(e.to)) &&(i!=e.to)){
-							cc.set(i, cc.get(e.from));
-						}
+						//iterate over edges and move pointers
+						cc.set(edge.to, cc.get(e.from));
+						cc.set(edge.from, cc.get(e.from));
 					}
 					cc.set(e.to,cc.get(e.from));
 
 				} else {
 					for(E edge : cc.get(e.from) ) {
 						cc.get(e.to).add(edge);
-					}
-					for (int i = 0; i < cc.size(); i++){
-						if ((cc.get(i) == cc.get(e.from)) && (i!=e.from)){
-							cc.set(i, cc.get(e.to));
-						}
+						//iterate over edges and move pointers
+						cc.set(edge.to, cc.get(e.to));
+						cc.set(edge.from, cc.get(e.to));
+
 					}
 					cc.set(e.from,cc.get(e.to));
 
